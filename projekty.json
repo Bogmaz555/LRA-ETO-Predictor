@@ -1,0 +1,31 @@
+{
+  "projekty": [
+    {
+      "id": 1,
+      "nazwa": "Automatyzacja Tia",
+      "wartość_oferty": 1500000.0,
+      "koszty_bazowe": 2025000.0,
+      "rentowność": -35.0,
+      "status": "NO-GO",
+      "data": "2026-02-22"
+    },
+    {
+      "id": 2,
+      "nazwa": "Automatyzacja Tia2",
+      "wartość_oferty": 1500000.0,
+      "koszty_bazowe": 1080000.0,
+      "rentowność": 28.0,
+      "status": "GO",
+      "data": "2026-02-22"
+    },
+    {
+      "id": 3,
+      "nazwa": "Stalprodukt",
+      "wartość_oferty": 4500000.0,
+      "koszty_bazowe": 3475000.0,
+      "rentowność": 22.78,
+      "status": "GO",
+      "data": "2026-02-22"
+    }
+  ]
+}
