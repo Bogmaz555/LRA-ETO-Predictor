@@ -125,4 +125,134 @@ with tab2:
         st.metric("Rentowność brutto", f"{margin:.1f}%", delta="GO" if margin >= 22 else "NO-GO")
         st.metric("Kwota zaliczki", f"{advance_val:,.0f} zł")
 
-    with st.expander("🔍 Zobacz szczegółowy wykaz składowych Gate
+    with st.expander("🔍 Zobacz szczegółowy wykaz składowych Gate-2"):
+        breakdown_df = pd.DataFrame({
+            "Element kosztorysu": [
+                "Koszt bazowy", 
+                "Bufor G (Niepewność)", 
+                f"Bufor H (Historia: {history_risk_pct}%)", 
+                f"Bufor I (Narzuty: {overhead_pct}%)", 
+                "Innowacyjność", 
+                "Zmienność materiałów", 
+                "**SUMA GATE-2**"
+            ],
+            "Wartość [zł]": [
+                f"{base_cost:,.2f}", 
+                f"{buffer_g:,.2f}", 
+                f"{buffer_h:,.2f}", 
+                f"{buffer_i:,.2f}", 
+                f"{buffer_innovation:,.2f}", 
+                f"{buffer_time:,.2f}", 
+                f"**{total_cost:,.2f}**"
+            ],
+            "Wpływ %": [
+                "-", 
+                f"{(buffer_g/base_cost*100):.1f}%", 
+                f"{history_risk_pct:.1f}%", 
+                f"{overhead_pct:.1f}%", 
+                f"{(inn_map[innovation_level]*100):.1f}%", 
+                f"{(buffer_time/base_cost*100):.1f}%", 
+                f"{(total_cost/base_cost*100-100):.1f}% narzutu"
+            ]
+        })
+        st.table(breakdown_df)
+
+    if st.button("🚀 Uruchom symulację Monte Carlo (10 000 iteracji)"):
+        sigma = 0.12 + (project_duration * 0.01) + (inn_map[innovation_level] * 0.4)
+        sim_costs = np.random.normal(total_cost, total_cost * sigma, 10000)
+        fig = px.histogram(sim_costs, nbins=80, title=f"Rozkład kosztów (Zmienność: {sigma*100:.1f}%)")
+        st.plotly_chart(fig, use_container_width=True)
+        
+        st.markdown("""
+        ### 📊 Jak interpretować wynik symulacji?
+        * **Kształt dzwonu:** Pokazuje statystyczny rozkład ryzyka – najwyższe punkty to najbardziej prawdopodobne scenariusze.
+        * **P85 (Cena bezpieczna):** Punkt, w którym mamy 85% pewności, że koszty nie przekroczą tej wartości.
+        """)
+
+    if margin >= 22:
+        st.success("✅ GO – projekt przechodzi Gate-2")
+    elif margin >= 15:
+        st.warning("⚠️ WARUNKOWE – renegocjuj zakres lub zaliczki")
+    else:
+        st.error("❌ NO-GO – projekt poniżej progu rentowności")
+    
+    st.divider()
+    st.subheader("💾 Zapisz projekt")
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        project_name = st.text_input("Nazwa projektu (np. 'Klient XYZ - ETO-2026')", placeholder="Wpisz nazwę...")
+    with col2:
+        if st.button("💾 Zapisz"):
+            if project_name.strip():
+                status = "GO" if margin >= 22 else ("WARUNKOWE" if margin >= 15 else "NO-GO")
+                add_project(project_name, offer_value, total_cost, margin, status)
+                st.success(f"✅ Projekt '{project_name}' zapisany!")
+
+# ====================== GATE-3 + CR ======================
+with tab3:
+    st.header("Gate-3: Budżet wykonawczy + Change Request")
+    uploaded_file = st.file_uploader("Wgraj plik BOM (Excel)", type=["xlsx"])
+    col1, col2 = st.columns(2)
+    with col1:
+        cr_hours = st.number_input("Dodatkowe godziny (CR)", value=0)
+    with col2:
+        cr_materials = st.number_input("Dodatkowe materiały (zł)", value=0)
+    if st.button("Oblicz koszt Change Request"):
+        cr_cost = cr_hours * 110 + cr_materials
+        st.success(f"Koszt CR: **{cr_cost:,.0f} zł**")
+
+# ====================== DASHBOARD ======================
+with tab4:
+    st.header("Dashboard Zarządu – Przegląd")
+    projects = load_projects()
+    
+    if projects:
+        col1, col2, col3 = st.columns(3)
+        go_count = len([p for p in projects if p["status"] == "GO"])
+        nogo_count = len([p for p in projects if p["status"] == "NO-GO"])
+        avg_margin = np.mean([p["rentowność"] for p in projects])
+        
+        with col1:
+            st.metric("Średnia rentowność netto", f"{avg_margin:.1f}%")
+        with col2:
+            st.metric("Projektów GO", f"{go_count} z {len(projects)}")
+        with col3:
+            st.metric("Projektów NO-GO", nogo_count)
+        
+        st.subheader("📋 Lista zapisanych projektów")
+        df_projects = pd.DataFrame(projects)
+        df_display = df_projects[["nazwa", "wartość_oferty", "koszty_bazowe", "rentowność", "status", "data"]].copy()
+        df_display.columns = ["Nazwa", "Wartość oferty (zł)", "Koszty (zł)", "Rentowność (%)", "Status", "Data"]
+        st.dataframe(df_display, use_container_width=True, hide_index=True)
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            status_counts = df_projects["status"].value_counts()
+            fig_status = px.pie(values=status_counts.values, names=status_counts.index, title="Rozkład projektów wg statusu",
+                                color_discrete_map={"GO": "#00D084", "WARUNKOWE": "#FFA500", "NO-GO": "#FF4444"})
+            st.plotly_chart(fig_status, use_container_width=True)
+        
+        with col2:
+            fig_margin = px.scatter(df_projects, x="wartość_oferty", y="rentowność", color="status", size="koszty_bazowe",
+                                    hover_data=["nazwa"], title="Rentowność vs Wartość oferty",
+                                    color_discrete_map={"GO": "#00D084", "WARUNKOWE": "#FFA500", "NO-GO": "#FF4444"})
+            fig_margin.add_hline(y=22, line_dash="dash", line_color="green", annotation_text="próg GO (22%)")
+            fig_margin.add_hline(y=15, line_dash="dash", line_color="orange", annotation_text="próg WARUNKOWE (15%)")
+            st.plotly_chart(fig_margin, use_container_width=True)
+        
+        st.subheader("🗑️ Zarządzanie projektami")
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            project_to_delete = st.selectbox("Wybierz projekt do usunięcia:", options=[p["nazwa"] for p in projects], key="delete_select")
+        with col2:
+            if st.button("🗑️ Usuń"):
+                project_id = next((p["id"] for p in projects if p["nazwa"] == project_to_delete), None)
+                if project_id:
+                    delete_project(project_id)
+                    st.success(f"✅ Projekt '{project_to_delete}' usunięty!")
+                    st.rerun()
+    else:
+        st.info("📊 Brak zapisanych projektów.")
+
+st.sidebar.success("Aplikacja działa poprawnie ✅")
+st.sidebar.caption("LRA-ETO Predictor v2026 • Pełna wersja webowa")
