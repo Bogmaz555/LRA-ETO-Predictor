@@ -121,6 +121,7 @@ with tab2:
         history_pts = st.slider("Punkty historii klienta", 0, 20, 12)
 
     with col2:
+        # Obliczenia buforów (Twoja oryginalna logika)
         buffer_g = base_cost * (f / 100) * alpha
         buffer_h = base_cost * (0.18 + history_pts / 100)
         buffer_i = base_cost * 0.10
@@ -130,11 +131,41 @@ with tab2:
         st.metric("Całkowite koszty Gate-2", f"{total_cost:,.0f} zł")
         st.metric("Rentowność brutto", f"{margin:.1f}%", delta="GO" if margin >= 22 else "NO-GO")
 
+    # --- NOWA FUNKCJA: SZCZEGÓŁOWY WYKAZ KOSZTÓW ---
+    with st.expander("🔍 Zobacz szczegółowy wykaz składowych Gate-2"):
+        breakdown_df = pd.DataFrame({
+            "Element kosztorysu": ["Koszt bazowy", "Bufor G (Niepewność F)", "Bufor H (Historia klienta)", "Bufor I (Narzuty stałe)", "**SUMA GATE-2**"],
+            "Wartość [zł]": [
+                f"{base_cost:,.2f}",
+                f"{buffer_g:,.2f}",
+                f"{buffer_h:,.2f}",
+                f"{buffer_i:,.2f}",
+                f"**{total_cost:,.2f}**"
+            ],
+            "Procent bazy": [
+                "-",
+                f"{(f * alpha):.1f}%",
+                f"{(18 + history_pts):.1f}%",
+                "10.0%",
+                f"{((total_cost/base_cost - 1) * 100):.1f}% więcej"
+            ]
+        })
+        st.table(breakdown_df)
+
     # Monte Carlo
     if st.button("🚀 Uruchom symulację Monte Carlo (10 000 iteracji)"):
         sim_costs = np.random.normal(total_cost, total_cost * 0.15, 10000)
         fig = px.histogram(sim_costs, nbins=80, title="Rozkład kosztów – P85 = bezpieczna cena")
         st.plotly_chart(fig, use_container_width=True)
+        
+        # --- NOWA FUNKCJA: WYJAŚNIENIE WYKRESU ---
+        st.markdown("""
+        ### 📊 Jak interpretować wynik symulacji?
+        Wykres powyżej przedstawia **10 000 wariantów** wykonania tego projektu:
+        * **Kształt dzwonu:** Najwyższe słupki to scenariusze o największym prawdopodobieństwie. Twój koszt **Gate-2** znajduje się w centrum tego dzwonu.
+        * **Ogon po prawej stronie:** Pokazuje scenariusze pesymistyczne (nieprzewidziane awarie, błędy projektowe).
+        * **P85 (Cena bezpieczna):** Zazwyczaj rekomenduje się przyjęcie budżetu na poziomie 85-tego percentyla (miejsce, gdzie 85% słupków jest po lewej stronie). Daje to 85% pewności, że nie przekroczysz założonej kwoty.
+        """)
 
     if margin >= 22:
         st.success("✅ GO – projekt przechodzi Gate-2")
