@@ -122,7 +122,7 @@ with tab2:
         breakdown_df = pd.DataFrame({
             "Element kosztorysu": ["Koszt bazowy", "Bufor G (Niepewność)", "Bufor H (Historia)", "Bufor I (Narzuty)", "Innowacyjność", "Zmienność materiałów", "**SUMA GATE-2**"],
             "Wartość [zł]": [f"{base_cost:,.2f}", f"{buffer_g:,.2f}", f"{buffer_h:,.2f}", f"{buffer_i:,.2f}", f"{buffer_innovation:,.2f}", f"{buffer_time:,.2f}", f"**{total_cost:,.2f}**"],
-            "Procent bazy": ["-", f"{(f*alpha):.1f}%", f"{(18+history_pts):.1f}%", "10.0%", f"{(inn_map[innovation_level]*100):.1f}%", f"{(buffer_time/base_cost*100):.1f}%", f"{(total_cost/base_cost*100-100):.1f}% więcej"]
+            "Procent bazy": ["-", f"{(f*alpha):.1f}%", f"{(5+history_pts):.1f}%", "10.0%", f"{(inn_map[innovation_level]*100):.1f}%", f"{(buffer_time/base_cost*100):.1f}%", f"{(total_cost/base_cost*100-100):.1f}% więcej"]
         })
         st.table(breakdown_df)
 
