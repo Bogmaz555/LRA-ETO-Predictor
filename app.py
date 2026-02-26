@@ -104,7 +104,7 @@ with tab2:
     with col2:
         # Obliczenia buforów
         buffer_g = base_cost * (f / 100) * alpha
-        buffer_h = base_cost * (0.18 + history_pts / 100)
+        buffer_h = base_cost * (0.1 + history_pts / 100)
         buffer_i = base_cost * 0.10
         buffer_innovation = base_cost * inn_map[innovation_level]
         buffer_time = (base_cost * 0.6) * (material_volatility / 100) * project_duration
