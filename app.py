@@ -162,6 +162,41 @@ with tab2:
         sim_costs = np.random.normal(total_cost, total_cost * sigma, 10000)
         fig = px.histogram(sim_costs, nbins=80, title=f"Rozkład kosztów (Zmienność: {sigma*100:.1f}%)")
         st.plotly_chart(fig, use_container_width=True)
+
+                # === PROPOZYCJA KWOTY NA PODSTAWIE WYKRESU MONTE CARLO ===
+        st.markdown("---")
+        st.subheader("💰 Propozycja kwoty ofertowej – Monte Carlo")
+        
+        # Obliczenie percentyli kosztów z symulacji
+        p80 = np.percentile(sim_costs, 80)
+        p85 = np.percentile(sim_costs, 85)
+        p90 = np.percentile(sim_costs, 90)
+        
+        # Rekomendowana cena przy 25% marży brutto (najczęściej stosowana w ETO)
+        target_margin = 0.25
+        cena_p80 = p80 / (1 - target_margin)
+        cena_p85 = p85 / (1 - target_margin)
+        cena_p90 = p90 / (1 - target_margin)
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Konservatywna (P80)", f"{cena_p80:,.0f} zł")
+        with col2:
+            st.metric("**REKOMENDOWANA (P85)**", f"{cena_p85:,.0f} zł", "⭐ 85% pewności")
+        with col3:
+            st.metric("Bardzo bezpieczna (P90)", f"{cena_p90:,.0f} zł")
+        
+        st.caption("Ceny zapewniające minimum 25% marży brutto przy danym poziomie pewności kosztów")
+        
+        # Porównanie z aktualną ceną oferty (z Gate-1)
+        if offer_value > 0:
+            diff = cena_p85 - offer_value
+            if diff > 50000:
+                st.warning(f"⚠️ Zalecamy podnieść cenę o **{diff:,.0f} zł** do poziomu **{cena_p85:,.0f} zł**")
+            elif diff < -30000:
+                st.success(f"✅ Masz zapas – możesz zejść o **{abs(diff):,.0f} zł**")
+            else:
+                st.info(f"✅ Aktualna cena oferty ({offer_value:,.0f} zł) jest blisko rekomendacji Monte Carlo.")
         
         st.markdown("""
         ### 📊 Jak interpretować wynik symulacji?
