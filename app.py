@@ -41,7 +41,7 @@ def delete_project(project_id):
     projects = [p for p in projects if p["id"] != project_id]
     save_projects(projects)
 
-# ====================== KONFIGURACJA AUTOPROCES ======================
+# ====================== AUTOPROCES – KONFIGURACJA + HEADER ======================
 st.set_page_config(
     page_title="Kalkulator rentowności projektów ETO",
     page_icon="🤖",
@@ -54,7 +54,7 @@ ORANGE = "#f58220"
 DARK_GRAY = "#58595b"
 LIGHT_GRAY = "#6c6d70"
 
-# Custom CSS – pełna identyfikacja wizualna
+# Custom CSS
 st.markdown(f"""
 <style>
     .stApp {{background-color: #f8f9fa;}}
@@ -71,14 +71,25 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# HEADER Z LOGO AUTOPROCES
-col_logo, col_tytul = st.columns([1.1, 4])
+# HEADER Z LOGO (zabezpieczony przed błędem)
+col_logo, col_tytul = st.columns([1.15, 4])
 with col_logo:
-    st.image("logo_autoproces.png", width=210)
+    try:
+        st.image("logo_autoproces.png", width=210)
+    except:
+        st.markdown(f"""
+        <div style="background: linear-gradient(90deg, {DARK_GRAY}, #3a3b3d); 
+                    padding:20px; border-radius:12px; text-align:center; width:205px;">
+            <span style="font-size:36px; font-weight:900; color:{ORANGE};">AUTO</span>
+            <span style="font-size:36px; font-weight:900; color:white;">PROCES</span>
+        </div>
+        """, unsafe_allow_html=True)
+        st.caption("AutoProces")
 
 with col_tytul:
-    st.markdown(f"<h1 style='margin-bottom:0; color:{ORANGE};'>Kalkulator rentowności projektów ETO</h1>", unsafe_allow_html=True)
+    st.markdown(f"<h1 style='margin-bottom:0;'>Kalkulator rentowności projektów ETO</h1>", unsafe_allow_html=True)
     st.markdown("**Automatyzacja procesów produkcyjnych • Robotyzacja • Maszyny specjalne**")
+    
 st.caption("Warstwowy model przewidywania rentowności ETO • Gate 1-2-3 + Monte Carlo")
 
 # ====================== INSTRUKCJE W SIDEBARZ ======================
