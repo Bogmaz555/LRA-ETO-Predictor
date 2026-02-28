@@ -41,7 +41,7 @@ def delete_project(project_id):
     projects = [p for p in projects if p["id"] != project_id]
     save_projects(projects)
 
-# ====================== AUTOPROCES – KONFIGURACJA + HEADER ======================
+# ====================== AUTOPROCES – HEADER (jedno słowo + maksymalna widoczność) ======================
 st.set_page_config(
     page_title="Kalkulator rentowności projektów ETO",
     page_icon="🤖",
@@ -51,13 +51,13 @@ st.set_page_config(
 
 # Kolory firmy AutoProces
 ORANGE = "#f58220"
-DARK_GRAY = "#58595b"
+DARK_GRAY = "#1f2123"
 LIGHT_GRAY = "#6c6d70"
 
-# Custom CSS
+# Custom CSS – lepszy kontrast na jasnym tle
 st.markdown(f"""
 <style>
-    .stApp {{background-color: #f8f9fa;}}
+    .stApp {{background-color: #ffffff;}}   /* czyste białe tło zamiast #f8f9fa */
     h1, h2 {{color: {DARK_GRAY} !important;}}
     .stButton>button {{
         background-color: {ORANGE};
@@ -68,27 +68,39 @@ st.markdown(f"""
     .stButton>button:hover {{background-color: #d96f1c;}}
     .stMetric label {{color: {DARK_GRAY};}}
     .stMetric div[data-testid="stMetricValue"] {{color: {ORANGE};}}
+    
+    /* Dodatkowy cień pod headerem */
+    .header-container {{
+        background: linear-gradient(90deg, {DARK_GRAY}, #2a2c2f);
+        padding: 20px 0;
+        border-radius: 0 0 16px 16px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }}
 </style>
 """, unsafe_allow_html=True)
 
-# HEADER Z LOGO (zabezpieczony przed błędem)
-col_logo, col_tytul = st.columns([1.15, 4])
+# HEADER Z LOGO – AUTOPROCES w jednym słowie
+st.markdown('<div class="header-container">', unsafe_allow_html=True)
+
+col_logo, col_tytul = st.columns([1.2, 4])
 with col_logo:
     try:
-        st.image("logo_autoproces.png", width=210)
+        st.image("logo_autoproces.png", width=220)
     except:
         st.markdown(f"""
-        <div style="background: linear-gradient(90deg, {DARK_GRAY}, #3a3b3d); 
-                    padding:20px; border-radius:12px; text-align:center; width:205px;">
-            <span style="font-size:36px; font-weight:900; color:{ORANGE};">AUTO</span>
-            <span style="font-size:36px; font-weight:900; color:white;">PROCES</span>
+        <div style="background: linear-gradient(90deg, {DARK_GRAY}, #2a2c2f); 
+                    padding:28px 20px; border-radius:14px; text-align:center; 
+                    width:235px; box-shadow: 0 8px 25px rgba(0,0,0,0.2);">
+            <span style="font-size:46px; font-weight:900; letter-spacing:-3px; color:{ORANGE};">AUTOPROCES</span>
         </div>
         """, unsafe_allow_html=True)
-        st.caption("AutoProces")
+        st.caption("")
 
 with col_tytul:
-    st.markdown(f"<h1 style='margin-bottom:0;'>Kalkulator rentowności projektów ETO</h1>", unsafe_allow_html=True)
-    st.markdown("**Automatyzacja procesów produkcyjnych • Robotyzacja • Maszyny specjalne**")
+    st.markdown(f"<h1 style='margin:8px 0 0 0; color:{ORANGE};'>Kalkulator rentowności projektów ETO</h1>", unsafe_allow_html=True)
+    st.markdown("**Automatyzacja procesów • Robotyzacja • Maszyny specjalne**")
+
+st.markdown('</div>', unsafe_allow_html=True)
     
 st.caption("Warstwowy model przewidywania rentowności ETO • Gate 1-2-3 + Monte Carlo")
 
