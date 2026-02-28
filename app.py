@@ -150,7 +150,7 @@ with st.sidebar:
     # Infografika robotyzacji
     st.markdown("### 🤖 Robotyzacja w praktyce")
     try:
-        st.image("https://i.imgur.com/8vL2K9p.png", use_column_width=True, caption="Typowy cykl projektu ETO")
+        caption="Typowy cykl projektu ETO")
     except:
         pass
     
