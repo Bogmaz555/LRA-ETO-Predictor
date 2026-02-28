@@ -114,15 +114,28 @@ st.caption("Warstwowy model przewidywania rentowności ETO • Gate 1-2-3 + Mont
 # ====================== INSTRUKCJE W SIDEBARZ ======================
 with st.sidebar:
     st.divider()
-    with st.expander("📖 Instrukcja obsługi"):
+       with st.expander("📖 Jak korzystać z aplikacji?", expanded=True):
         st.markdown("""
-        ### Jak korzystać z aplikacji?
-        **Gate-1: Szybka selekcja RFQ**
-        **Gate-2: Główna kalkulacja**
-        - Uwzględnij Innowacyjność i czas trwania projektu dla lepszej precyzji.
-        - Dostosuj Narzuty operacyjne i Ryzyko historii klienta.
-        **Gate-3: Budżet + Change Request**
-        **Dashboard Zarządu**
+        **Gate-1: Szybka selekcja RFQ**  
+        Wstępna ocena opłacalności zapytania ofertowego i decyzja **GO / NO-GO** przed rozpoczęciem koncepcji.
+
+        **Gate-2: Główna kalkulacja + Monte Carlo**  
+        Szczegółowa kalkulacja kosztów, marży i ryzyka projektu.  
+        Symulacja Monte Carlo generuje **rekomendowaną cenę ofertową**.
+
+        **Gate-3: Budżet wykonawczy + Change Request**  
+        Ostateczny budżet projektu oraz wycena i śledzenie zmian w trakcie realizacji.
+
+        **Dashboard Zarządu**  
+        Przegląd rentowności wszystkich projektów ETO w firmie.
+
+        ---
+        **Kluczowe wskazówki dla precyzyjnych wyników:**
+        • Zawsze dokładnie określ **poziom innowacyjności** projektu  
+        • Dostosuj ryzyko na podstawie **historii współpracy** z klientem  
+        • Dłuższe projekty wymagają większej rezerwy  
+        • Dla większości projektów zalecamy poziom ufności **P85** + marża 18–22%  
+        • Uruchamiaj symulację Monte Carlo przy wartości oferty powyżej 1,8 mln zł
         """)
     st.divider()
 
