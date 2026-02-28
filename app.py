@@ -41,9 +41,44 @@ def delete_project(project_id):
     projects = [p for p in projects if p["id"] != project_id]
     save_projects(projects)
 
-st.set_page_config(page_title="LRA-ETO Predictor 2026", layout="wide", page_icon="🎯")
+# ====================== KONFIGURACJA AUTOPROCES ======================
+st.set_page_config(
+    page_title="Kalkulator rentowności projektów ETO",
+    page_icon="🤖",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-st.title("🎯 LRA-ETO Predictor 2026")
+# Kolory firmy AutoProces
+ORANGE = "#f58220"
+DARK_GRAY = "#58595b"
+LIGHT_GRAY = "#6c6d70"
+
+# Custom CSS – pełna identyfikacja wizualna
+st.markdown(f"""
+<style>
+    .stApp {{background-color: #f8f9fa;}}
+    h1, h2 {{color: {DARK_GRAY} !important;}}
+    .stButton>button {{
+        background-color: {ORANGE};
+        color: white;
+        border: none;
+        font-weight: 600;
+    }}
+    .stButton>button:hover {{background-color: #d96f1c;}}
+    .stMetric label {{color: {DARK_GRAY};}}
+    .stMetric div[data-testid="stMetricValue"] {{color: {ORANGE};}}
+</style>
+""", unsafe_allow_html=True)
+
+# HEADER Z LOGO AUTOPROCES
+col_logo, col_tytul = st.columns([1.1, 4])
+with col_logo:
+    st.image("logo_autoproces.png", width=210)
+
+with col_tytul:
+    st.markdown(f"<h1 style='margin-bottom:0; color:{ORANGE};'>Kalkulator rentowności projektów ETO</h1>", unsafe_allow_html=True)
+    st.markdown("**Automatyzacja procesów produkcyjnych • Robotyzacja • Maszyny specjalne**")
 st.caption("Warstwowy model przewidywania rentowności ETO • Gate 1-2-3 + Monte Carlo")
 
 # ====================== INSTRUKCJE W SIDEBARZ ======================
