@@ -41,7 +41,7 @@ def delete_project(project_id):
     projects = [p for p in projects if p["id"] != project_id]
     save_projects(projects)
 
-# ====================== AUTOPROCES – DARK MODE + PRAWDZIWE LOGO ======================
+# ====================== AUTOPROCES – DARK MODE + LOGO W LEWYM GÓRNYM ROGU ======================
 st.set_page_config(
     page_title="Kalkulator rentowności projektów ETO",
     page_icon="🤖",
@@ -49,63 +49,65 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Kolory firmy AutoProces – ciemna paleta
+# Kolory firmy
 ORANGE = "#f58220"
 DARK_BG = "#0e1117"
+CARD_BG = "#1a1d23"
 TEXT_LIGHT = "#f0f2f5"
 TEXT_GRAY = "#b8b9bd"
 
-# === PEŁNY DARK MODE CSS ===
+# === PEŁNY DARK MODE + STYL LOGO JAK NA SCREENIE ===
 st.markdown(f"""
 <style>
     .stApp {{background-color: {DARK_BG} !important;}}
-    .stMarkdown, .stTextInput, .stSelectbox, .stSlider, .stNumberInput, .stRadio, .stCheckbox {{
-        color: {TEXT_LIGHT} !important;
+    h1, h2, h3 {{color: {ORANGE} !important;}}
+    .stButton>button {{background-color: {ORANGE}; color: white; font-weight: 600;}}
+    
+    /* Logo w czarnym zaokrąglonym boxie – dokładnie jak na Twoim screenie */
+    .logo-box {{
+        background: #11151c;
+        border-radius: 14px;
+        padding: 18px 22px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+        border: 2px solid {ORANGE};
+        text-align: center;
+        width: 138px;
+        margin-top: -8px;
+        margin-left: 12px;
     }}
-    h1, h2, h3, h4 {{color: {ORANGE} !important;}}
-    .stButton>button {{
-        background-color: {ORANGE};
-        color: white;
-        border: none;
-        font-weight: 600;
-        border-radius: 8px;
-    }}
-    .stMetric label {{color: {TEXT_GRAY};}}
-    .stMetric div[data-testid="stMetricValue"] {{color: {ORANGE}; font-size: 1.8rem;}}
     
     .header-container {{
         background: linear-gradient(90deg, #12151b, #1f232a);
-        padding: 22px 30px;
+        padding: 18px 30px 22px 30px;
         border-radius: 0 0 20px 20px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.65);
-        margin-bottom: 25px;
+        margin-bottom: 15px;
     }}
-    [data-testid="stSidebar"] {{background-color: #12151b; border-right: 1px solid #2a2f38;}}
+    [data-testid="stSidebar"] {{background-color: #12151b;}}
 </style>
 """, unsafe_allow_html=True)
 
-# HEADER – logo z pliku pobierz.png + mniejszy placeholder
+# HEADER – logo w lewym górnym rogu dokładnie jak na screenie
 st.markdown('<div class="header-container">', unsafe_allow_html=True)
 
-col_logo, col_tytul = st.columns([1.05, 4.8])   # więcej miejsca dla tytułu
+col_logo, col_tytul = st.columns([1.1, 5.5])   # bardzo wąska kolumna logo → lewy róg
+
 with col_logo:
     try:
-        st.image("pobierz.png", width=215)
+        st.markdown('<div class="logo-box">', unsafe_allow_html=True)
+        st.image("pobierz.png", width=110)          # logo z pliku, mniejsze i idealnie wpasowane
+        st.markdown('</div>', unsafe_allow_html=True)
     except:
-        # Placeholder mniejszy i elegancki
+        # awaryjny placeholder (jeśli plik nie wczyta się)
         st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #1f232a, #0e1117); 
-                    padding:26px 18px; border-radius:14px; text-align:center; 
-                    width:215px; box-shadow: 0 10px 25px rgba(0,0,0,0.7); 
-                    border: 2px solid {ORANGE};">
-            <span style="font-size:42px; font-weight:900; letter-spacing:-2.5px; 
-                        color:{ORANGE};">AUTOPROCES</span>
+        <div class="logo-box">
+            <span style="font-size:38px; font-weight:900; letter-spacing:-2px; color:{ORANGE};">AUTOPROCES</span>
         </div>
         """, unsafe_allow_html=True)
 
 with col_tytul:
-    st.markdown(f"<h1 style='margin:8px 0 5px 0; font-size:2.25rem;'>Kalkulator rentowności projektów ETO</h1>", unsafe_allow_html=True)
-    st.markdown(f"<p style='color:{TEXT_GRAY}; font-size:1.1rem; margin:0;'>Automatyzacja procesów • Robotyzacja • Maszyny specjalne</p>", unsafe_allow_html=True)
+    st.markdown(f"<h1 style='margin:12px 0 6px 0; font-size:2.35rem;'>Kalkulator rentowności projektów ETO</h1>", unsafe_allow_html=True)
+    st.markdown(f"<p style='color:{TEXT_GRAY}; font-size:1.12rem; margin:0;'>Automatyzacja procesów • Robotyzacja • Maszyny specjalne</p>", unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
     
