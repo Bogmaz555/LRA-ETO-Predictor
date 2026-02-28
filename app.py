@@ -111,10 +111,17 @@ st.markdown('</div>', unsafe_allow_html=True)
     
 st.caption("Warstwowy model przewidywania rentowności ETO • Gate 1-2-3 + Monte Carlo")
 
-# ====================== INSTRUKCJE W SIDEBARZ ======================
+# ====================== SIDEBAR – INSTRUKCJA ======================
 with st.sidebar:
-    st.divider()
-       with st.expander("📖 Jak korzystać z aplikacji?", expanded=True):
+    # Logo w sidebarze
+    try:
+        st.image("pobierz.png", width=170)
+    except:
+        st.markdown("**🟠 AUTOPROCES**")
+
+    st.markdown("### 🛠️ Kalkulator rentowności ETO")
+    
+    with st.expander("📖 Jak korzystać z aplikacji?", expanded=True):
         st.markdown("""
         **Gate-1: Szybka selekcja RFQ**  
         Wstępna ocena opłacalności zapytania ofertowego i decyzja **GO / NO-GO** przed rozpoczęciem koncepcji.
@@ -134,10 +141,20 @@ with st.sidebar:
         • Zawsze dokładnie określ **poziom innowacyjności** projektu  
         • Dostosuj ryzyko na podstawie **historii współpracy** z klientem  
         • Dłuższe projekty wymagają większej rezerwy  
-        • Dla większości projektów zalecamy poziom ufności **P85** + marża 18–22%  
-        • Uruchamiaj symulację Monte Carlo przy wartości oferty powyżej 1,8 mln zł
+        • Dla większości projektów zalecamy poziom ufności **P85** + marża **18–22%**  
+        • Uruchamiaj symulację Monte Carlo przy wartości oferty powyżej **1,8 mln zł**
         """)
+    
     st.divider()
+    
+    # Infografika robotyzacji
+    st.markdown("### 🤖 Robotyzacja w praktyce")
+    try:
+        st.image("https://i.imgur.com/8vL2K9p.png", use_column_width=True, caption="Typowy cykl projektu ETO")
+    except:
+        pass
+    
+    st.caption("© AutoProces 2026")
 
 tab1, tab2, tab3, tab4 = st.tabs(["Gate-1 RFQ", "Gate-2 Koncepcja", "Gate-3 + CR", "Dashboard Zarządu"])
 
