@@ -149,10 +149,7 @@ with st.sidebar:
     
     # Infografika robotyzacji
     st.markdown("### 🤖 Robotyzacja w praktyce")
-    try:
-        caption="Typowy cykl projektu ETO")
-    except:
-        pass
+ 
     
     st.caption("© AutoProces 2026")
 
